@@ -46,7 +46,7 @@ Plot a 2D grided image with physical units defined by the grid spacing `spacing`
 function _plot_with_units(image, spacing; perc=95, cmap=:cet_CET_L1, vmin=nothing, vmax=nothing,
                           o=(0, 0), interp="hanning", aspect=nothing, d_scale=0,
                           positive=false, labels=(:X, :Depth), cbar=false,
-                          units=(:m, :m), name="RTM", new_fig=true, save=nothing)
+                          units=(:m, :m), name="RTM", new_fig=true, save=nothing, ax=nothing)
     nz, nx = size(image)
     dz, dx = spacing
     oz, ox = o
@@ -64,7 +64,11 @@ function _plot_with_units(image, spacing; perc=95, cmap=:cet_CET_L1, vmin=nothin
     cmap = try ColorMap(cmap); catch; ColorMap(colorschemes[cmap].colors); end
     new_fig && figure()
     # Plot
-    imshow(scaled, vmin=ma, vmax=a, cmap=cmap, aspect=aspect, interpolation=interp, extent=extent)
+    if isnothing(ax)
+        imshow(scaled, vmin=ma, vmax=a, cmap=cmap, aspect=aspect, interpolation=interp, extent=extent)
+    else
+        ax.imshow(scaled, vmin=ma, vmax=a, cmap=cmap, aspect=aspect, interpolation=interp, extent=extent)
+    end
     xlabel("$(labels[1]) [$(units[1])]")
     ylabel("$(labels[2]) [$(units[2])]")
     title("$name")
