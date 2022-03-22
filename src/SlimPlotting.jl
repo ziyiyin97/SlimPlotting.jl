@@ -43,7 +43,7 @@ Plot a 2D grided image with physical units defined by the grid spacing `spacing`
   - `save::String`: (Optional) Save figure to file, default=nothing doesn't save the figure
   - `cbar::Bool`: (Optional) Show colorbar, default=false
 """
-function _plot_with_units(image, spacing; perc=95, cmap=:cet_CET_L1, vmax=nothing,
+function _plot_with_units(image, spacing; perc=95, cmap=:cet_CET_L1, vmin=nothing, vmax=nothing,
                           o=(0, 0), interp="hanning", aspect=nothing, d_scale=0,
                           positive=false, labels=(:X, :Depth), cbar=false,
                           units=(:m, :m), name="RTM", new_fig=true, save=nothing)
@@ -56,6 +56,7 @@ function _plot_with_units(image, spacing; perc=95, cmap=:cet_CET_L1, vmax=nothin
     a = positive ? maximum(scaled) : quantile(abs.(vec(scaled)), perc/100)
     isnothing(vmax) || (a = vmax)
     ma = positive ? minimum(scaled) : -a
+    isnothing(vmin) || (ma = vmin)
     extent = [ox, ox+ (nx-1)*dx, oz+(nz-1)*dz, oz]
     isnothing(aspect) && (aspect = :auto)
 
